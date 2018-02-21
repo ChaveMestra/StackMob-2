@@ -6,5 +6,6 @@ public class ConfigFile extends ConfigLoader {
 
     public ConfigFile(StackMob sm){
         super(sm, "config");
+        
     }
 }

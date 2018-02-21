@@ -1,7 +1,10 @@
 package uk.antiperson.stackmob;
 
+import com.intellectualcrafters.plot.api.PlotAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import net.milkbowl.vault.permission.Permission;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.antiperson.stackmob.events.chunk.LoadEvent;
 import uk.antiperson.stackmob.events.chunk.UnloadEvent;
@@ -23,6 +26,7 @@ import uk.antiperson.stackmob.tools.plugin.PluginSupport;
 public class StackMob extends JavaPlugin {
 
     private int versionId = 0;
+    public static PlotAPI plotApi;
     public ConfigFile config = new ConfigFile(this);
     public TranslationFile translation = new TranslationFile(this);
     public EntityTools tools = new EntityTools(this);
@@ -30,12 +34,18 @@ public class StackMob extends JavaPlugin {
     public DropTools dropTools = new DropTools(this);
     public PluginSupport pluginSupport = new PluginSupport(this);
     public UpdateChecker updater = new UpdateChecker(this);
+    public static Permission perms = null;
 
     @Override
-    public void onLoad(){
+    public void onLoad() {
+        if (Bukkit.getPluginManager().getPlugin("PlotSquared") != null) {
+            getLogger().info("PlotSquared hookado!");
+            plotApi = new PlotAPI();
+        }
+
         pluginSupport.setupWorldGuard();
-        if(pluginSupport.getWorldGuard() != null && config.getCustomConfig().getBoolean("worldguard-support")){
-            if(!pluginSupport.isWorldGuardCorrectVersion()){
+        if (pluginSupport.getWorldGuard() != null && config.getCustomConfig().getBoolean("worldguard-support")) {
+            if (!pluginSupport.isWorldGuardCorrectVersion()) {
                 getLogger().info("In order for this functionality to work, WorldGuard 6.2 or later needs to be installed.");
                 return;
             }
@@ -44,19 +54,25 @@ public class StackMob extends JavaPlugin {
         }
     }
 
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
+    }
+
     @Override
-    public void onEnable(){
+    public void onEnable() {
         // Startup messages
         getLogger().info("StackMob v" + getDescription().getVersion() + " created by antiPerson/BaconPied");
         getLogger().info("Documentation can be found at " + getDescription().getWebsite());
         getLogger().info("GitHub repository can be found at " + GlobalValues.GITHUB);
-
+        setupPermissions();
         // Set version id, but if not supported, warn.
         setVersionId();
-        if(getVersionId() == 0){
+        if (getVersionId() == 0) {
             getLogger().warning("A bukkit version that is not supported has been detected! (" + Bukkit.getBukkitVersion() + ")");
             getLogger().warning("The features of this version are not supported, so some issues may occur!");
-        }else if(getVersionId() == 6){
+        } else if (getVersionId() == 6) {
             getLogger().info("Minecraft 1.13 is not currently supported completely.");
             getLogger().info("Report any issues on the GitHub issues tracker.");
         }
@@ -68,16 +84,16 @@ public class StackMob extends JavaPlugin {
         // Initialize support for other plugins.
         pluginSupport.startup();
 
-        if(config.getCustomConfig().isBoolean("plugin.loginupdatechecker")){
+        if (config.getCustomConfig().isBoolean("plugin.loginupdatechecker")) {
             getLogger().info("An old version of the configuration file has been detected!");
             getLogger().info("A new one will be generated and the old one will be renamed to config.old");
             config.generateNewVersion();
         }
 
-        if(config.getCustomConfig().getBoolean("tag.show-player-nearby.enabled")){
-            if(getVersionId() == 1){
+        if (config.getCustomConfig().getBoolean("tag.show-player-nearby.enabled")) {
+            if (getVersionId() == 1) {
                 getLogger().info("At the present moment, the feature 'show-player-nearby' is only supported on Minecraft 1.9 and above.");
-            }else if(!pluginSupport.isProtocolSupportEnabled()) {
+            } else if (!pluginSupport.isProtocolSupportEnabled()) {
                 getLogger().info("ProtocolLib is required for certain features, but it cannot be found!");
                 getLogger().info("These feature(s) will not work until ProtocolLib is installed.");
             }
@@ -100,9 +116,8 @@ public class StackMob extends JavaPlugin {
 
     }
 
-
     @Override
-    public void onDisable(){
+    public void onDisable() {
         getLogger().info("Cancelling currently running tasks...");
         getServer().getScheduler().cancelTasks(this);
         getLogger().info("Saving entity amount cache...");
@@ -111,27 +126,27 @@ public class StackMob extends JavaPlugin {
     }
 
     // Server version detection, if version isn't currently supported, then versionId is 0.
-    private void setVersionId(){
-        if(Bukkit.getVersion().contains("1.8")){
+    private void setVersionId() {
+        if (Bukkit.getVersion().contains("1.8")) {
             versionId = 1;
-        }else if(Bukkit.getVersion().contains("1.9")){
+        } else if (Bukkit.getVersion().contains("1.9")) {
             versionId = 2;
-        }else if(Bukkit.getVersion().contains("1.10")){
+        } else if (Bukkit.getVersion().contains("1.10")) {
             versionId = 3;
-        }else if(Bukkit.getVersion().contains("1.11")){
+        } else if (Bukkit.getVersion().contains("1.11")) {
             versionId = 4;
-        }else if(Bukkit.getVersion().contains("1.12")){
+        } else if (Bukkit.getVersion().contains("1.12")) {
             versionId = 5;
-        }else if(Bukkit.getVersion().contains("1.13")){
+        } else if (Bukkit.getVersion().contains("1.13")) {
             versionId = 6;
         }
     }
 
-    public int getVersionId(){
+    public int getVersionId() {
         return versionId;
     }
 
-    private void registerEssentialEvents(){
+    private void registerEssentialEvents() {
         getServer().getPluginManager().registerEvents(new SpawnEvent(this), this);
         getServer().getPluginManager().registerEvents(new DeathEvent(this), this);
         getServer().getPluginManager().registerEvents(new LoadEvent(this), this);
@@ -141,36 +156,36 @@ public class StackMob extends JavaPlugin {
         new TagTask(this).runTaskTimer(this, 0, 5);
     }
 
-    private void registerNotEssentialEvents(){
-        if(config.getCustomConfig().getBoolean("multiply.creeper-explosion")){
+    private void registerNotEssentialEvents() {
+        if (config.getCustomConfig().getBoolean("multiply.creeper-explosion")) {
             getServer().getPluginManager().registerEvents(new ExplodeEvent(), this);
         }
-        if(config.getCustomConfig().getBoolean("multiply.chicken-eggs")){
+        if (config.getCustomConfig().getBoolean("multiply.chicken-eggs")) {
             getServer().getPluginManager().registerEvents(new ItemDrop(this), this);
         }
-        if(config.getCustomConfig().getBoolean("divide-on.sheep-dye")) {
+        if (config.getCustomConfig().getBoolean("divide-on.sheep-dye")) {
             getServer().getPluginManager().registerEvents(new DyeEvent(this), this);
         }
-        if(config.getCustomConfig().getBoolean("divide-on.breed")){
+        if (config.getCustomConfig().getBoolean("divide-on.breed")) {
             getServer().getPluginManager().registerEvents(new InteractEvent(this), this);
         }
-        if(config.getCustomConfig().getBoolean("multiply.small-slimes")) {
+        if (config.getCustomConfig().getBoolean("multiply.small-slimes")) {
             getServer().getPluginManager().registerEvents(new SlimeEvent(), this);
         }
-        if(config.getCustomConfig().getBoolean("multiply-damage-done")){
+        if (config.getCustomConfig().getBoolean("multiply-damage-done")) {
             getServer().getPluginManager().registerEvents(new DealtDamageEvent(), this);
         }
-        if(config.getCustomConfig().getBoolean("multiply-damage-received.enabled")){
+        if (config.getCustomConfig().getBoolean("multiply-damage-received.enabled")) {
             getServer().getPluginManager().registerEvents(new ReceivedDamageEvent(this), this);
         }
-        if(config.getCustomConfig().getBoolean("no-targeting.enabled")){
+        if (config.getCustomConfig().getBoolean("no-targeting.enabled")) {
             getServer().getPluginManager().registerEvents(new TargetEvent(this), this);
         }
-        if(config.getCustomConfig().getBoolean("divide-on.tame")){
+        if (config.getCustomConfig().getBoolean("divide-on.tame")) {
             getServer().getPluginManager().registerEvents(new TameEvent(this), this);
         }
         getServer().getPluginManager().registerEvents(new ShearEvent(this), this);
-        if(getVersionId() > 2){
+        if (getVersionId() > 2) {
             getServer().getPluginManager().registerEvents(new BreedEvent(this), this);
         }
     }

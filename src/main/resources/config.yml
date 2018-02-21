@@ -58,7 +58,7 @@ no-stack-worlds:
     - ''
 # Don't stack until there are more than the number specified of entities of the same type in the check area set above.
 # Set to 0 to disable this feature.
-dont-stack-until: 5
+dont-stack-until: 1
 
 # Enables/disables the comparing of mob type specific attributes before stacking together.
 compare:
@@ -228,3 +228,16 @@ mythicmobs:
 
 # If WorldGuard is installed, enable support for it.
 worldguard-support: true
+
+
+# CONFIG DUS BRODI
+
+# os mobs podem morrer mais que um por uma permissao? se sim, deixe true.
+# caso contrário, morrerá apenas um mob do stack a cada kill
+stack-multiplekill-enabled: true
+
+    
+# se true, vai limitar o numero de mobs stackados na Ilha/Plot do cara
+# de acordo com sua perm
+stack-limit-enabled: true
+

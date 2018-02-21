@@ -80,6 +80,10 @@
             <url>file:///${project.basedir}/jars</url>
         </repository>
         <repository>
+            <id>pex-repo</id>
+            <url>http://pex-repo.aoeu.xyz</url>
+        </repository>
+        <repository>
             <id>bstats-repo</id>
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
@@ -91,9 +95,19 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
+        <repository>
+	        <id>vault-repo</id>
+	        <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
     <dependencies>
         <!--Spigot API-->
+         <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -147,6 +161,13 @@
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
             <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>PlotSquared</groupId>
+            <artifactId>com.plotsquared.bukkit</artifactId>
+            <scope>system</scope>
+            <version>1cd30b8-1966</version>
+            <systemPath>${project.basedir}/jars/PlotSquared-Bukkit-18.02.15-1cd30b8-1966.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
