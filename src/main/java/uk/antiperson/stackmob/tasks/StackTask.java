@@ -1,6 +1,7 @@
 package uk.antiperson.stackmob.tasks;
 
 import com.intellectualcrafters.plot.object.Plot;
+import com.wasteofplastic.askyblock.Island;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -11,6 +12,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 import uk.antiperson.stackmob.StackMob;
 import static uk.antiperson.stackmob.StackMob.plotApi;
+import static uk.antiperson.stackmob.StackMob.sbAPI;
 import uk.antiperson.stackmob.tools.extras.GlobalValues;
 
 /**
@@ -77,6 +79,31 @@ public class StackTask extends BukkitRunnable {
                             Plot plot = StackMob.plotApi.getPlot(first.getLocation());
                             if (plot != null) {
                                 UUID uuid = plot.guessOwner();
+                                String tipo = first.getType().toString();
+                                if (Bukkit.getPlayer(uuid) == null) {
+                                    continue;
+                                }
+                                for (PermissionAttachmentInfo perms : Bukkit.getPlayer(uuid).getEffectivePermissions()) {
+                                    if (perms.getPermission().contains("stacklimit")) {
+                                        String splitar = perms.getPermission().toString();
+
+                                        if (splitar.split(";")[1].equalsIgnoreCase(tipo)) {
+                                            int numeroPerm = Integer.parseInt(splitar.split(";")[2]);
+                                            if (limite < numeroPerm) {
+                                                limite = numeroPerm;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (nearby.getMetadata(GlobalValues.METATAG).get(0).asInt() == limite) {
+                                    continue;
+                                }
+                            }
+                        }
+                        if (sbAPI != null) {
+                            Island ilha = sbAPI.getIslandAt(first.getLocation());
+                            if (ilha != null) {
+                                UUID uuid = ilha.getOwner();
                                 String tipo = first.getType().toString();
                                 if (Bukkit.getPlayer(uuid) == null) {
                                     continue;

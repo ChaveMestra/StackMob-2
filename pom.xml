@@ -88,6 +88,11 @@
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
         <repository>
+            <id>bintray-tastybento-maven-repo</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/tastybento/maven-repo</url>
+        </repository>
+        <repository>
             <id>dmulloy2-repo</id>
             <url>http://repo.dmulloy2.net/content/groups/public/</url>
         </repository>
@@ -96,13 +101,13 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
-	        <id>vault-repo</id>
-	        <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
     </repositories>
     <dependencies>
         <!--Spigot API-->
-         <dependency>
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.6</version>
@@ -168,6 +173,11 @@
             <scope>system</scope>
             <version>1cd30b8-1966</version>
             <systemPath>${project.basedir}/jars/PlotSquared-Bukkit-18.02.15-1cd30b8-1966.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.wasteofplastic</groupId>
+            <artifactId>askyblock</artifactId>
+            <version>3.0.8.2</version>
         </dependency>
     </dependencies>
 </project>

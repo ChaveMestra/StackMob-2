@@ -80,6 +80,11 @@
       <url>http://repo.bstats.org/content/repositories/releases/</url>
     </repository>
     <repository>
+      <id>bintray-tastybento-maven-repo</id>
+      <name>bintray</name>
+      <url>http://dl.bintray.com/tastybento/maven-repo</url>
+    </repository>
+    <repository>
       <id>dmulloy2-repo</id>
       <url>http://repo.dmulloy2.net/content/groups/public/</url>
     </repository>
@@ -162,6 +167,12 @@
       <version>1cd30b8-1966</version>
       <scope>system</scope>
       <systemPath>C:\Users\GabrielBatistella\Desktop\Rocket\StackMob-2/jars/PlotSquared-Bukkit-18.02.15-1cd30b8-1966.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.wasteofplastic</groupId>
+      <artifactId>askyblock</artifactId>
+      <version>3.0.8.2</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

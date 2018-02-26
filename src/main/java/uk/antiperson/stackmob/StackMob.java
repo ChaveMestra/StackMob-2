@@ -1,6 +1,7 @@
 package uk.antiperson.stackmob;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import net.milkbowl.vault.permission.Permission;
@@ -35,6 +36,7 @@ public class StackMob extends JavaPlugin {
     public PluginSupport pluginSupport = new PluginSupport(this);
     public UpdateChecker updater = new UpdateChecker(this);
     public static Permission perms = null;
+    public static ASkyBlockAPI sbAPI = null;
 
     @Override
     public void onLoad() {
@@ -42,6 +44,11 @@ public class StackMob extends JavaPlugin {
             getLogger().info("PlotSquared hookado!");
             plotApi = new PlotAPI();
         }
+        if (Bukkit.getPluginManager().getPlugin("ASkyBlock") != null) {
+            getLogger().info("ASkyBlock hookado!");
+            sbAPI = ASkyBlockAPI.getInstance();
+        }
+       
 
         pluginSupport.setupWorldGuard();
         if (pluginSupport.getWorldGuard() != null && config.getCustomConfig().getBoolean("worldguard-support")) {
